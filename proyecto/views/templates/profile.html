@@ -1,0 +1,228 @@
+{% extends "base/base.html" %}
+
+{% block title %} Perfil {% endblock title %}
+
+{% block stylesheets %}
+{{ super() }}
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <!DOCTYPE html>
+    <html lang="es">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='build/css/profile.css')}}">
+        <title>Perfil de Usuario</title>
+    </head>
+
+    <body>
+        <div class="contenedor">
+            <div class="card">
+                <div class="card-header">
+                    <h3>{{title}}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <strong>Nombre:</strong>
+                        </div>
+                        <div class="col-sm-9">
+                            {{ name }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <strong>Email:</strong>
+                        </div>
+                        <div class="col-sm-9">
+                            {{ email }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <strong>Suscripciones:</strong>
+                        </div>
+                        <div class="col-sm-9">
+                            {{ subscriptions }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <strong>Nombre del Plan:</strong>
+                        </div>
+                        <div class="col-sm-9">
+                            {{ planname }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <strong>Precio Mensual:</strong>
+                        </div>
+                        <div class="col-sm-9">
+                            {{ monthly_price }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <strong>Fecha de Inicio:</strong>
+                        </div>
+                        <div class="col-sm-9">
+                            {{ start_date }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <strong>Fecha de Fin:</strong>
+                        </div>
+                        <div class="col-sm-9">
+                            {{ end_date }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <strong>Estado:</strong>
+                        </div>
+                        <div class="col-sm-9">
+                            {{ status }}
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div style="text-align: center" class="boton">
+                <a data-tracking-type="button" href="/editar_perfil/" class="editar">Editar Perfil</a>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+
+    </html>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+{{ super()}}
+<!-- Chart.js -->
+
+{% endblock javascripts %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Perfil de Usuario</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3>{{title}}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        <strong>Nombre:</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        {{ name }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        <strong>Email:</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        {{ email }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        <strong>Suscripciones:</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        {{ subscriptions }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        <strong>Nombre del Plan:</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        {{ planname }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        <strong>Precio Mensual:</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        {{ monthly_price }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        <strong>Fecha de Inicio:</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        {{ start_date }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        <strong>Fecha de Fin:</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        {{ end_date }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        <strong>Estado:</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        {{ status }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center">
+        <a data-tracking-type="button" href="/perfil/" class="nav-link login">Editar Perfil</a>
+    </div>    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+ -->

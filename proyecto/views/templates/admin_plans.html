@@ -1,0 +1,53 @@
+{% extends "admin_base/base.html" %}
+
+{% block title %} Plans {% endblock title %}
+
+{% block stylesheets %}
+{{ super() }}
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <a href="{{ url_for('views.create_plan') }}" class="btn btn-primary">Crear nuevo plan</a>
+  <div class="table-responsive-sm">
+    <table class="table table-primary">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Monthly Price</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if plans %}
+        {% for plan in plans %}
+        <tr>
+          <td>{{ plan.id }}</td>
+          <td>{{ plan.name }}</td>
+          <td>{{ plan.description }}</td>
+          <td>{{ plan.monthly_price }}</td>
+          <td>
+            <a href="{{ url_for('views.update_plan', id=plan.id) }}" class="btn btn-warning">Edit</a>
+            <form action="{{ url_for('views.delete_plan', id=plan.id) }}" method="post" style="display:inline;">
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+          <td colspan="5" class="text-center">No plans available</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+{{ super()}}
+<!-- Chart.js -->
+{% endblock javascripts %}

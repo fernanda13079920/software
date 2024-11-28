@@ -1,0 +1,226 @@
+{% extends "base/base.html" %}
+
+{% block title %} presencial {% endblock title %}
+
+{% block stylesheets %}
+{{ super() }}
+{% endblock stylesheets %}
+
+{% block content %}
+<!-- chinin -->
+<div class="right_col" role="main">
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Speech Recognition and Translation</title>
+        <link rel="stylesheet" href="{{url_for('static', filename='build/css/presencial.css')}}">
+    </head>
+
+    <body>
+        <div class="text-center content-center">
+            <div class="contains">
+                <div class="select-container">
+                    <select id="sourceLang">
+                        <option value="">Idioma Entrada</option>
+                        {% for code, name in languages.items() %}
+                        <option value="{{ code }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                    <select id="targetLang">
+                        <option value="">Idioma Salida</option>
+                        {% for code, name in languages.items() %}
+                        <option value="{{ code }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div id="startCaptureButton" class="btn-record">
+                <svg id="micIcon" width="24px" height="24px" viewBox="0 0 14 19" version="1.1">
+                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <path
+                            d="M7,12 C8.66,12 9.99,10.66 9.99,9 L10,3 C10,1.34 8.66,0 7,0 C5.34,0 4,1.34 4,3 L4,9 C4,10.66 5.34,12 7,12 Z M12.3,9 C12.3,12 9.76,14.1 7,14.1 C4.24,14.1 1.7,12 1.7,9 L0,9 C0,12.41 2.72,15.23 6,15.72 L6,19 L8,19 L8,15.72 C11.28,15.24 14,12.42 14,9 L12.3,9 Z"
+                            fill="#FFFFFF" fill-rule="nonzero">
+                        </path>
+                    </g>
+                </svg>
+            </div>
+            <h1>Púlse para grabar</h1>
+
+            <div>
+                <input type="checkbox" id="speakTranslation" />
+                <label for="speakTranslation">Speak Translations</label>
+            </div>
+
+            <div id="result">
+                <div class="panel-container">
+                    <div class="text-panel" style="margin-right: 2%;">
+                        <h2>Transcripción</h2>
+                        <div id="recognizedTexts"></div>
+                    </div>
+
+                    <div class="text-panel" style="margin-right: 2%;">
+                        <h2>Traduccion</h2>
+                        <div id="translationTexts"></div>
+                        <audio id="translationAudio" controls style="display:none"></audio>
+                    </div>
+                    <div class="text-panel">
+                        <h2>Resumen</h2>
+                        <div id="summaryTexts"></div>
+                    </div>
+                    
+                    <p id="errorMessage" style="color: red;"></p>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    </html>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+{{ super()}}
+<!-- Chart.js -->
+
+<script>
+    let captureInterval;
+    let lastPlayedAudio = null;
+    let isRecording = false;
+
+    const startCaptureButton = document.getElementById('startCaptureButton');
+    const micIcon = document.getElementById('micIcon');
+
+    startCaptureButton.addEventListener('click', () => {
+        isRecording = !isRecording;
+        if (isRecording) {
+            startRecording();
+        } else {
+            stopRecording();
+        }
+    });
+
+    function startRecording() {
+        startCaptureButton.classList.remove('bg-red');
+        startCaptureButton.classList.add('bg-green');
+        micIcon.style.fill = "#FFFFFF";
+
+        var sourceLang = document.getElementById("sourceLang").value;
+        var targetLang = document.getElementById("targetLang").value;
+        var speakTranslations = document.getElementById("speakTranslation").checked;
+
+        fetch('/start_capture', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ sourceLang, targetLang, speakTranslations })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                captureInterval = setInterval(getTranslations, 5000); // Update every 5 seconds
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    function stopRecording() {
+    startCaptureButton.classList.remove('bg-green');
+    startCaptureButton.classList.add('bg-red');
+    micIcon.style.fill = "#000000";
+
+    clearInterval(captureInterval);
+
+    var targetLang = document.getElementById("targetLang").value;
+
+    fetch('/stop_capture', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ targetLang })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+
+        // Mostrar transcripciones y traducciones previas
+        if (data.recognized_texts && data.translation_texts) {
+            const recognizedTextsDiv = document.getElementById('recognizedTexts');
+            const translationTextsDiv = document.getElementById('translationTexts');
+
+            recognizedTextsDiv.innerHTML = '';
+            data.recognized_texts.forEach(text => {
+                const p = document.createElement('p');
+                p.innerText = text;
+                recognizedTextsDiv.appendChild(p);
+            });
+
+            translationTextsDiv.innerHTML = '';
+            data.translation_texts.forEach(text => {
+                const p = document.createElement('p');
+                p.innerText = text;
+                translationTextsDiv.appendChild(p);
+            });
+        }
+
+        // Mostrar el resumen si está disponible
+        if (data.summary) {
+            const summaryDiv = document.getElementById('summaryTexts');
+            summaryDiv.innerText = data.summary;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+
+
+    function getTranslations() {
+        fetch('/get_translations')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.error_message) {
+                    document.getElementById("errorMessage").innerText = data.error_message;
+                } else {
+                    const recognizedTextsDiv = document.getElementById("recognizedTexts");
+                    const translationTextsDiv = document.getElementById("translationTexts");
+
+                    recognizedTextsDiv.innerHTML = '';
+                    translationTextsDiv.innerHTML = '';
+
+                    data.recognized_texts.forEach(text => {
+                        const p = document.createElement('p');
+                        p.innerText = text;
+                        recognizedTextsDiv.appendChild(p);
+                    });
+
+                    data.translation_texts.forEach(text => {
+                        const p = document.createElement('p');
+                        p.innerText = text;
+                        translationTextsDiv.appendChild(p);
+                    });
+
+                    if (data.audio_path && data.audio_path !== lastPlayedAudio) {
+                        const audioElement = document.getElementById("translationAudio");
+                        audioElement.src = `/temporales/${data.audio_path.split('/').pop()}`;
+                        audioElement.style.display = "block";
+                        lastPlayedAudio = data.audio_path;  // Actualizar la variable con el último archivo reproducido
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+</script>
+
+
+{% endblock javascripts %}

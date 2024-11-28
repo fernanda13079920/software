@@ -1,0 +1,172 @@
+{% extends "base/base.html" %}
+
+{% block title %} Video {% endblock title %}
+
+{% block stylesheets %}
+{{ super() }}
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <!DOCTYPE html>
+    <html lang="en">
+    <!-- cambios de chinin para prueba -->
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet"> -->
+        <title>Video Transcriber and Translator</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+            integrity="sha384-rMzH5hNv9cdL3iJSJCEmyFNE4o3JGt2V6wOrX3gIT7Gj9Wfgvk5tbcG+yUHsOF+k" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{url_for('static', filename='build/css/video.css')}}">
+    </head>
+
+    <body>
+        <div class="bg-gray-100 flex items-center justify-center h-screen">
+            <div class="scrollable-section">
+                <div class="text-center content-center">
+                    <div class="upload-button-container">
+                        <form action="/upload-video/{{id}}" method="POST" enctype="multipart/form-data">
+                            <div class="drop-zone" id="dropZone">
+                                <span class="drop-zone-text">Arrastra y suelta tu video aquí o haz clic para
+                                    seleccionarlo
+                                    <input type="file" id="videoFile" name="videoFile" accept="video/*"
+                                        class="file-input" required>
+                                </span>
+                            </div>
+
+                            <div class="contains">
+                                <div class="select-container">
+                                    <select name="idioma_entrada" id="idioma_entrada" required>
+                                        <option value="">Idioma Entrada</option>
+                                        {% for code, name in idiomas.items() %}
+                                        <option value="{{ code }}">{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+
+                                    <select name="idioma_salida" id="idioma_salida" required>
+                                        <option value="">Idioma Salida</option>
+                                        {% for code, name in idiomas.items() %}
+                                        <option value="{{ code }}">{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="videoPreview" class="video-preview">
+                                <video controls></video>
+                            </div>
+
+                            <!-- seleccionar entrada y salidas -->
+
+                            <button type="submit">Subir Video</button>
+
+                            <a class="video_nuevo" href="/video/{{id}}">Nuevo Video
+                            </a>
+
+                            <!-- paneles de texto completo -->
+                            <div class="panel-container">
+                                <!-- panel de texto 1 -->
+                                <div class="text-panel" style="margin-right: 2%;">
+                                    <h2>Transcripción</h2>
+                                    <p id="transcription">{{ transcripcion }}</p>
+                                    {% if audio_traduccion %}
+                                    <audio controls>
+                                        <source src="/static/archivostemporales/temporal.wav" type="audio/mp3">
+                                        Tu navegador no soporta el elemento de audio.
+                                    </audio>
+                                    {% endif %}
+                                </div>
+
+                                <!-- panel de texto 2 -->
+                                <div class="text-panel">
+                                    <h2>Traducción</h2>
+                                    <p id="translation">{{ traduccion }}</p>
+                                    {% if audio_traduccion %}
+                                    <audio controls>
+                                        <source src="/static/archivostemporales/audio_traduccion.mp3" type="audio/mp3">
+                                        Tu navegador no soporta el elemento de audio.
+                                    </audio>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    </html>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+{{ super()}}
+<!-- Chart.js -->
+<script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const dropZone = document.getElementById('dropZone');
+        const videoFileInput = document.getElementById('videoFile');
+        const videoPreview = document.getElementById('videoPreview');
+        const videoElement = videoPreview.querySelector('video');
+        const uploadForm = document.getElementById('uploadForm');
+
+        dropZone.addEventListener('click', () => {
+            videoFileInput.click();
+        });
+
+        dropZone.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (event) => {
+            event.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                videoFileInput.files = files;
+                updateVideoPreview(files[0]);
+                uploadForm.submit();  // Enviar el formulario automáticamente
+            }
+        });
+
+        videoFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                updateVideoPreview(file);
+                uploadForm.submit();  // Enviar el formulario automáticamente
+            }
+        });
+
+        function updateVideoPreview(file) {
+            videoElement.src = URL.createObjectURL(file);
+            videoPreview.style.display = 'block';
+        }
+    });
+
+    const micButton = document.getElementById('micButton');
+    let isRecording = false;
+
+    micButton.addEventListener('click', () => {
+        isRecording = !isRecording;
+        if (isRecording) {
+            micButton.classList.remove('bg-red');
+            micButton.classList.add('bg-green');
+        } else {
+            micButton.classList.remove('bg-green');
+            micButton.classList.add('bg-red');
+        }
+    });
+</script>
+
+
+{% endblock javascripts %}

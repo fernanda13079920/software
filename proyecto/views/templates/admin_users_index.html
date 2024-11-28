@@ -1,0 +1,47 @@
+{% extends "admin_base/base.html" %}
+
+{% block title %} Lista de Usuarios {% endblock title %}
+
+{% block stylesheets %}
+{{ super() }}
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <h2>User Management</h2>
+  <div class="table-responsive-sm">
+    <table class="table table-primary">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Email</th>
+          <th>Estado</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if users %}
+        {% for user in users %}
+        <tr>
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.state }}</td>
+          <td>
+            <a href="{{ url_for('views.update_user_state', id=user.id) }}" class="btn btn-warning">Edit State</a>
+          </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+          <td colspan="5" class="text-center">No users available</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+{{ super() }}
+{% endblock javascripts %}

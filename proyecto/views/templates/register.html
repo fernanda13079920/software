@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{url_for('static', filename='build/css/register.css')}}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="container mt-5">
+            <h1 class="text-center">Registrar Usuario</h1>
+
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            {% if success %}
+            <div class="alert alert-success" role="alert">
+                {{ success }}
+            </div>
+
+            {% endif %}
+
+            <div class="centered-form">
+                <form method="post" class="row g-3 justify-content-center">
+                    <div>
+                        <input type="hidden" name="id_rol" id="id_rol" value="2">
+                        <input type="hidden" name="state" id="state" value="activo">
+                    </div>
+
+                    <div class="col-md-8">
+                        <label for="name" class="form-label">Name:</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+
+                    <div class="col-md-8">
+                        <label for="email" class="form-label">Email:</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+
+                    <div class="col-md-8">
+                        <label for="password" class="form-label">Password:</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+
+                    <div class="field-container" style="text-align: center;">
+                        <label for="privacy">
+                            <input type="checkbox" name="" id="privacy" required> Acepto los <a href="#"
+                                id="termsLink">terminos de servicio</a> y <a href="#">politica de privacidad</a>.
+                        </label>
+                    </div>
+
+                    <!-- El modal -->
+                    <div id="termsModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h2>Terms of Service</h2>
+                            <p>Al registrarse en nuestro sistema, el usuario acepta cumplir y estar sujeto a los
+                                presentes
+                                Términos y Condiciones. Si no está de acuerdo con estos términos, no debe registrarse ni
+                                utilizar nuestros servicios.</p>
+                            <h3>Registro de Usuario</h3>
+                            <p>Para utilizar ciertas funciones de nuestro sistema, el usuario debe registrarse
+                                proporcionando información precisa, completa y actualizada sobre sí mismo, tal como se
+                                solicita en el formulario de registro. El usuario es responsable de mantener la
+                                confidencialidad de su cuenta y contraseña, y de todas las actividades que ocurran bajo
+                                su
+                                cuenta.</p>
+                            <h3>Información Personal</h3>
+                            <p>Al registrarse, el usuario acepta proporcionar información veraz, precisa y completa
+                                sobre su
+                                identidad y otros datos solicitados. El usuario se compromete a actualizar sus datos
+                                personales en caso de cambios. La falsificación de cualquier información puede resultar
+                                en
+                                la terminación inmediata de la cuenta.</p>
+                            <h3>Uso de la Cuenta</h3>
+                            <p>El usuario se compromete a utilizar su cuenta de manera responsable y conforme a las
+                                leyes
+                                aplicables. Está prohibido compartir la cuenta con terceros. Cualquier uso no autorizado
+                                de
+                                la cuenta debe ser notificado inmediatamente a nuestro equipo de soporte.</p>
+                            <h3>Privacidad y Seguridad</h3>
+                            <p>Nos comprometemos a proteger la privacidad y seguridad de los datos personales del
+                                usuario.
+                                La información recopilada durante el registro será utilizada únicamente para
+                                proporcionar y
+                                mejorar nuestros servicios. Para más detalles, consulte nuestra Política de Privacidad.
+                            </p>
+                            <h3>Propiedad Intelectual</h3>
+                            <p>Todo el contenido, software y otros materiales disponibles en nuestro sistema están
+                                protegidos por derechos de autor, marcas comerciales y otras leyes de propiedad
+                                intelectual.
+                                El usuario se compromete a no copiar, modificar, distribuir, vender o alquilar ninguna
+                                parte
+                                de nuestros servicios.</p>
+                            <h3>Terminación de la Cuenta</h3>
+                            <p>Nos reservamos el derecho de suspender o cancelar la cuenta del usuario en cualquier
+                                momento,
+                                sin previo aviso, si consideramos que ha violado estos Términos y Condiciones. El
+                                usuario
+                                puede cancelar su cuenta en cualquier momento contactando con nuestro equipo de soporte.
+                            </p>
+                            <h3>Limitación de Responsabilidad</h3>
+                            <p>En la medida máxima permitida por la ley, no seremos responsables por daños directos,
+                                indirectos, incidentales, especiales, consecuentes o ejemplares, incluidos, entre otros,
+                                daños por pérdida de beneficios, datos o cualquier otro tipo de pérdida tangible o
+                                intangible resultante del uso o la imposibilidad de uso de nuestros servicios.</p>
+                            <h3>Modificaciones de los Términos</h3>
+                            <p>Nos reservamos el derecho de modificar estos Términos y Condiciones en cualquier momento.
+                                Las
+                                modificaciones serán efectivas inmediatamente después de su publicación en nuestro sitio
+                                web. Es responsabilidad del usuario revisar periódicamente estos términos. El uso
+                                continuado
+                                de los servicios tras cualquier modificación constituye la aceptación de dichos cambios.
+                            </p>
+                            <h3>Ley Aplicable</h3>
+                            <p>Estos Términos y Condiciones se rigen por las leyes del país en el que operamos.
+                                Cualquier
+                                disputa que surja en relación con estos términos será sometida a la jurisdicción
+                                exclusiva
+                                de los tribunales competentes en dicha jurisdicción.</p>
+                            <h3>Contacto</h3>
+                            <p>Para cualquier pregunta o preocupación relacionada con estos Términos y Condiciones, el
+                                usuario puede contactarnos a través de ficct_translate@gmail.com</p>
+                        </div>
+                    </div>
+
+
+                    <div class="d-grid gap-2 col-6 mx-auto">
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </div>
+                </form>
+            </div>
+
+            <p class="mt-3 text-center">¿Ya tienes una cuenta? Inicia sesion <a href="/login">Aquí</a></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+
+<script>
+    // Obtiene el modal
+    var modal = document.getElementById("termsModal");
+
+    // Obtiene el enlace que abre el modal
+    var termsLink = document.getElementById("termsLink");
+
+    // Obtiene el elemento <span> que cierra el modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // Cuando el usuario hace clic en el enlace, abre el modal
+    termsLink.onclick = function (event) {
+        event.preventDefault();
+        modal.style.display = "block";
+    }
+
+    // Cuando el usuario hace clic en <span> (x), cierra el modal
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    // Cuando el usuario hace clic en cualquier parte fuera del modal, cierra el modal
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+</html>

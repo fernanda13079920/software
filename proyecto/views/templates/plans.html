@@ -1,0 +1,44 @@
+{% extends "base/base.html" %}
+
+{% block title %} Plans {% endblock title %}
+
+{% block stylesheets %}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('static', filename='build/css/plans.css')}}">
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="plans-container py-8 px-4">
+    <h4 class="text-3xl font-bold text-center mb-8">Plans</h4>
+    <div class="plans-grid">
+      {% for plan in plans %}
+      <div class="plan-card">
+        <div>
+          <h2 class="plan-name">{{ plan.name }}</h2>
+          <h3 class="plan-description">{{ plan.description }}</h3>
+          <h2 class="plan-price">${{ plan.monthly_price }} USD</h2>
+          <div style="text-align: center;">
+            <img src="../static/images/plan.jpg" alt="" width="60%">
+          </div>
+        </div>
+
+        <div class="plan-details">
+          <ul>
+            <li>Detail 1 for {{ plan.name }}</li>
+          </ul>
+          <a href="/card/{{id}}/{{plan.id}}" class="plan-buy-button">Buy Now</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+{{ super()}}
+<!-- Chart.js -->
+
+{% endblock javascripts %}

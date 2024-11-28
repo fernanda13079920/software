@@ -1,0 +1,47 @@
+{% extends "base/base.html" %}
+
+{% block title %} Suscripcion {% endblock title %}
+
+{% block stylesheets %}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('static', filename='build/css/suscripcion.css')}}">
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="plans-container py-8 px-4">
+    <h3 class="text-3xl font-bold text-center mb-8">Mi cuenta</h3>
+    <div class="plans-grid">
+      <div class="plan-card">
+        <div>
+          <h2 class="plan-description">Usuario: {{ data.user }}</h2>
+          <h3 class="plan-name">Plan: {{ data.plan }}</h3>
+          <h2 class="plan-price">State: {{ data.state }}</h2>
+          <h2 class="plan-price">Precio: {{ data.monthly_price }}</h2>
+          <h3 class="text-xl font-semibold">Fecha de compra del Plan: {{ data.fecha.strftime('%Y-%m-%d %H:%M:%S') }}
+          </h3>
+          <div style="text-align: center;">
+            <img class="" src="../static/images/cuenta.jpg" alt="" width="90%">
+          </div>
+        </div>
+        <div class="plan-details">
+          <ul>
+            <li></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  
+</style>
+
+{% endblock content %}
+
+{% block javascripts %}
+{{ super()}}
+<!-- Chart.js -->
+
+{% endblock javascripts %}
