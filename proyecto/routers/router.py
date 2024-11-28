@@ -142,7 +142,11 @@ def dashboard(id):
 @home.route('/dashboard_admin')
 def dashboard_admin():
     if 'Esta_logeado' in session:
-        return render_template('dashboardAdmin.html')
+        parametros = {"title": "Bienvenido(a) " + session['name'],
+                      "name": session['name'],
+                      "email": session['email']
+                      }
+        return render_template("dashboardAdmin.html", **parametros)
     return redirect(url_for('views.login'))
 
 #ruta a logaut 
