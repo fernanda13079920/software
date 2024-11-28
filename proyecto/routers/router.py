@@ -8,6 +8,7 @@ from ..controllers import PlansController
 
 # importamos los Modelos de usuario
 from ..models.User import User, Plan
+from ..models.User import Subscription
 import os
 import time
 from werkzeug.utils import secure_filename
@@ -132,10 +133,35 @@ def register():
     return render_template('register.html')
 
 #ruta de dasboard
-@home.route('/dashboard/<int:id>',methods=['GET', 'POST'])
+@home.route('/dashboard/<int:id>')
 def dashboard(id):
     if 'Esta_logeado' in session:
-        return render_template('dashboard.html', id = id)
+        user_subscription = Subscription.query.filter_by(user_id=id).first()
+
+        if user_subscription:
+            subscription_data = {
+                "subscriptions": "Activa",
+                "planname": user_subscription.plan.name,
+                "monthly_price": f"${user_subscription.plan.monthly_price:.2f}",
+                "start_date": user_subscription.start_date.strftime("%d-%m-%Y"),
+                "end_date": user_subscription.end_date.strftime("%d-%m-%Y") if user_subscription.end_date else "Indefinido"
+            }
+        else:
+            subscription_data = {
+                "subscriptions": "Subscripción inexistente",
+                "planname": "N/A",
+                "monthly_price": "N/A",
+                "start_date": "N/A",
+                "end_date": "N/A"
+            }
+
+        parametros = {
+            "title": "Bienvenido(a) " + session['name'],
+            "name": session['name'],
+            "email": session['email'],
+            **subscription_data
+        }
+        return render_template("dashboard.html", id=id, **parametros)  # Pasar `id` al contexto
     return redirect(url_for('views.login'))
 
 #ruta dashboard administrador
@@ -314,9 +340,15 @@ def upload_audio(id):
         audio_traduccion = resultado.get('audio_traduccion', '')
         print('Valor de audio_traduccion:', audio_traduccion)
 
-        return render_template('audio.html', id = id, idiomas=IDIOMAS, 
-        transcripcion=resultado.get('texto', ''), traduccion=resultado.get('texto_traducido', ''), audio_traduccion=audio_traduccion)
-    
+        return render_template(
+            'audio.html',
+            id=id,
+            idiomas=IDIOMAS,
+            transcripcion=resultado.get('texto', ''),  # Texto transcrito
+            traduccion=resultado.get('texto_traducido', ''),  # Texto traducido
+            audio_traduccion=audio_traduccion,  # Archivo de audio traducido
+            resumen=resultado.get('resumen', '')  # Resumen generado
+        )
     return redirect(request.url)
 
 
